@@ -29,6 +29,15 @@ services:
       containers:
         ipv4_address: 172.20.0.6
 
+  duckdns:
+    image: linuxserver/duckdns
+    environment:
+      - TZ=America/Lima
+      - SUBDOMAINS=mario21ic
+      - TOKEN=sasdsadsa
+      - LOG_FILE=false
+    restart: always
+
   pihole:
     container_name: pihole
     image: pihole/pihole:v5.7
