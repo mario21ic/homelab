@@ -65,7 +65,7 @@ services:
         ipv4_address: 172.20.0.7
 
   whoogle:
-    image: benbusby/whoogle-search:latest
+    image: benbusby/whoogle-search:buildx-experimental
     container_name: whoogle-search
     restart: unless-stopped
     pids_limit: 50
