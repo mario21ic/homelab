@@ -1,7 +1,7 @@
 version: '3'
 services:
   wireguard:
-    image: lscr.io/linuxserver/wireguard:latest
+    image: linuxserver/wireguard
     container_name: wireguard
     cap_add:
       - NET_ADMIN
@@ -10,26 +10,36 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=America/Lima
-      - SERVERURL=3.2.1.0 #optional
-      - SERVERPORT=51820 #optional
-      - PEERS=2 #optional
-      - PEERDNS=auto #optional
-      - INTERNAL_SUBNET=10.13.13.0 #optional
-      - ALLOWEDIPS=0.0.0.0/0 #optional
-      - LOG_CONFS=true #optional
+      - SERVERPORT=51820
+      - PEERS=2
+      - PEERSDNS=auto
+      - INTERNAL_SUBNET=10.13.13.0
     volumes:
       - ./wireguard-config:/config
       - /lib/modules:/lib/modules
+      - /usr/src:/usr/src
     ports:
-      - 51820:51820/udp
+      - 52820:52820/udp
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
+    dns:
+      - 172.20.0.7
     restart: unless-stopped
-    #dns:
-    #  - 172.20.0.7
-    #networks:
-    #  containers:
-    #    ipv4_address: 172.20.0.5
+    networks:
+      containers:
+        ipv4_address: 172.20.0.5
+
+  duckdns:
+    image: linuxserver/duckdns
+    environment:
+      - TZ=America/Lima
+      - SUBDOMAINS=mario21ic
+      - TOKEN=sasdsadsa
+      - LOG_FILE=false
+    restart: always
+    networks:
+      containers:
+        ipv4_address: 172.20.0.6
 
   pihole:
     container_name: pihole
@@ -38,8 +48,8 @@ services:
       - "53:53/tcp"
       - "53:53/udp"
       - "67:67/udp"
-      - "8080:80"
-      - "443:443"
+      - "80:80/tcp"
+      - "443:443/tcp"
     environment:
       TZ: "America/Lima"
       ADMIN_EMAIL: "miemail@gmail.com"
@@ -50,9 +60,9 @@ services:
     cap_add:
       - NET_ADMIN
     restart: unless-stopped
-    #networks:
-    #  containers:
-    #    ipv4_address: 172.20.0.7
+    networks:
+      containers:
+        ipv4_address: 172.20.0.7
 
   whoogle:
     image: benbusby/whoogle-search:buildx-experimental
@@ -70,16 +80,15 @@ services:
     #read_only: true
     ports:
       - "5000:5000"
-    #dns:
-    #  - 172.20.0.7
-    #  - 192.168.1.10
+    dns:
+      - 172.20.0.7
     tmpfs:
       - /config/:size=10M,uid=102,gid=102,mode=1700
       - /var/lib/tor/:size=10M,uid=102,gid=102,mode=1700
       - /run/tor/:size=1M,uid=102,gid=102,mode=1700
-    #networks:
-    #  containers:
-    #    ipv4_address: 172.20.0.8
+    networks:
+      containers:
+        ipv4_address: 172.20.0.8
 
 networks:
   containers:
