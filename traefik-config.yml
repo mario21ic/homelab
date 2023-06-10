@@ -1,0 +1,29 @@
+entryPoints:
+  web:
+    address: ":80"
+
+  websecure:
+    address: ":443"
+
+
+providers:
+    docker:
+        endpoint: "unix:///var/run/docker.sock"
+        exposedByDefault: false
+        #constraints: "Label(`environment`, `dev`)"
+    file:
+        #filename: ./traefik-servers.yml
+        filename: ./traefik-servers.yml
+
+
+api:
+    dashboard: true
+    insecure: true
+
+
+log:
+    #filePath: "/traefik.log"
+    filePath: "./traefik.log"
+    level: DEBUG
+    format: json
+

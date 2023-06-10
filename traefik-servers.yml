@@ -1,0 +1,56 @@
+http:
+    routers:
+        monit:
+            rule: "Host(`monit.discovery.mair`)"
+            service: monit-svc
+            #middlewares:
+            #    - "my-auth"
+        grafana:
+            rule: "Host(`grafana.discovery.mair`)"
+            service: grafana-svc
+            #middlewares:
+            #    - "my-auth"
+
+        prometheus:
+            rule: "Host(`prometheus.discovery.mair`)"
+            service: prometheus-svc
+            #middlewares:
+            #    - "my-auth"
+
+        plex:
+            rule: "Host(`plex.discovery.mair`)"
+            service: plex-svc
+            #middlewares:
+            #    - "my-auth"
+
+    services:
+        monit-svc:
+            loadBalancer:
+                sticky:
+                    cookie: {}
+                servers:
+                    - url: "http://localhost:2812"
+        grafana-svc:
+            loadBalancer:
+                sticky:
+                    cookie: {}
+                servers:
+                    - url: "http://localhost:3000"
+        prometheus-svc:
+            loadBalancer:
+                sticky:
+                    cookie: {}
+                servers:
+                    - url: "http://localhost:9090"
+        plex-svc:
+            loadBalancer:
+                sticky:
+                    cookie: {}
+                servers:
+                    - url: "http://localhost:32400"
+
+    middlewares:
+        my-auth:
+            basicAuth:
+                users:
+                  - "admin:$apr1$z29jqv1u$LI1ONyGEou628pPjyickG0"
