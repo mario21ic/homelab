@@ -235,7 +235,8 @@ networks:
           gateway: 192.168.1.1
           ip_range: 192.168.1.9/24
           #ip_range: 192.168.1.9/27
-          #aux-address: "host=192.168.1.8"
+          aux_addresses:
+            host: 192.168.1.80
   npi:
     driver: bridge
   #  ipam:
