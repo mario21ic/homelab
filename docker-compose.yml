@@ -14,6 +14,19 @@ services:
   #    - "./traefik-servers.yml:/traefik-servers.yml"
   #    - "./traefik.log:/traefik.log"
 
+  nginxproxymanager:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./nginx/data:/data
+      - ./nginx/letsencrypt:/etc/letsencrypt
+    networks:
+      npi:
+
   portainer:
     #container_name: portainer
     #image: portainer/portainer-ce:latest # community edition
