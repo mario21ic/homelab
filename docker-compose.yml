@@ -212,6 +212,8 @@ services:
       - ./usr/share/zoneinfo/America/Lima:/etc/localtime:ro
     #ports:
     #  - 8080:80
+    networks:
+      npi:
 
   dashy:
     image: lissy93/dashy:latest
