@@ -16,3 +16,10 @@ docker compose up -d
 
 
 Based on https://blog.oddbit.com/post/2018-03-12-using-docker-macvlan-networks/
+
+
+DNS over TLS:
+```
+cp cloudflared /etc/default
+cp cloudflared-dns.service /etc/systemd/system/cloudflared-dns.service
+```
