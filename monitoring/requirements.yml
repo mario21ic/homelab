@@ -1,0 +1,18 @@
+roles:
+  - src: geerlingguy.docker
+  - src: geerlingguy.ntp
+
+#roles:
+  #- src: community.docker
+  #- src: geerlingguy.docker
+  #- src: gantsign.golang
+  #- src: geerlingguy.ntp
+  
+collections:
+  - name: community.general
+  - name: prometheus.prometheus
+  #- name: community.docker
+  #- name: geerlingguy.docker
+  #- name: community.general
+  #- name: community.crypto
+  #- name: ansible.posix

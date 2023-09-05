@@ -1,0 +1,5 @@
+---
+- name: restart and enable grafana-server
+  service: name=grafana-server state=started enabled=yes
+  listen: "restart grafana"
+

@@ -1,0 +1,16 @@
+---
+- name: install tools
+  apt: name={{ item }} state=present update_cache=yes
+  with_items:
+    - htop
+    - tree
+    - git
+    - vim
+    - iperf3
+    - nmap
+    - net-tools
+    - netcat
+    - telnet
+    - curl
+    - wget
+    - unzip
