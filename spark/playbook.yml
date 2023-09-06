@@ -1,0 +1,16 @@
+---
+- name: Install Homelab Apps
+  hosts: all
+  become: true
+  remote_user: ubuntu
+  become_method: sudo
+  vars:
+    docker_users:
+      - ubuntu
+    #env: "prod"
+    mailto: "mario21ic@gmail.com"
+  roles:
+    - role: common
+      tags: [ 'common' ]
+    - role: spark
+      tags: [ 'spark' ]

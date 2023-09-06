@@ -1,0 +1,4 @@
+apt install -y default-jre default-jdk scala
+wget https://dlcdn.apache.org/spark/spark-3.4.1/spark-3.4.1-bin-hadoop3.tgz
+export PATH=$PATH:/usr/local/spark-3.4.1-bin-hadoop3/bin
+export PATH=$PATH:/usr/local/spark-3.4.1-bin-hadoop3/sbin
