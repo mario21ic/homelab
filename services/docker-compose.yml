@@ -1,0 +1,259 @@
+version: '3'
+services:
+  #traefik:
+  #  image: traefik:latest
+  #  labels:
+  #    - "traefik.http.routers.myauth.rule=HostRegexp(`{host:.+}`)"
+  #  network_mode: "host"
+  #  ports:
+  #    - "80:80" # TODO migrar nginx por traefik
+  #    - "8082:8080"
+  #  volumes:
+  #    - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  #    - "./traefik-config.yml:/traefik.yml"
+  #    - "./traefik-servers.yml:/traefik-servers.yml"
+  #    - "./traefik.log:/traefik.log"
+
+  nginxproxymanager:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./nginx/data:/data
+      - ./nginx/letsencrypt:/etc/letsencrypt
+    networks:
+      npi:
+
+  portainer:
+    #container_name: portainer
+    #image: portainer/portainer-ce:latest # community edition
+    image: portainer/portainer-ee:latest # enterprise
+    mem_reservation: 40MiB
+    mem_limit: 50MiB
+    #security_opt:
+    #  - no-new-privileges
+    cap_drop:
+      - ALL
+    pids_limit: 100
+    labels:
+      #- "traefik.http.services.portainer.loadbalancer.server.port=9443"
+      # Frontend
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`portainer.discovery.mair`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.services.frontend.loadbalancer.server.port=9000"
+      #- "traefik.http.services.frontend.loadbalancer.server.port=9443"
+      - "traefik.http.routers.frontend.service=frontend"
+      - "traefik.http.routers.frontend.tls.certresolver=leresolver"
+
+      # Edge
+      - "traefik.http.routers.edge.rule=Host(`edge.discovery.mair`)"
+      - "traefik.http.routers.edge.entrypoints=websecure"
+      - "traefik.http.services.edge.loadbalancer.server.port=8000"
+      - "traefik.http.routers.edge.service=edge"
+      - "traefik.http.routers.edge.tls.certresolver=leresolver"
+    healthcheck:
+      test: curl --fail http://localhost || exit 1
+      interval: 60s
+      retries: 5
+      start_period: 20s
+      timeout: 10s
+    restart: unless-stopped
+    #ports:
+    #  - 8000:8000
+    #  - 9443:9443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - portainer_data:/data
+    networks:
+      npi:
+
+  pihole:
+    #container_name: pihole
+    image: pihole/pihole:latest
+    mem_reservation: 40MiB
+    mem_limit: 50MiB
+    pids_limit: 100
+    #security_opt:
+    #  - no-new-privileges
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "67:67/udp"
+      #- "8080:80"
+      #- "443:443"
+    environment:
+      TZ: "America/Lima"
+      ADMIN_EMAIL: "mario21ic@gmail.com"
+      WEBPASSWORD: ${pihole_pass}
+    volumes:
+      - ./etc-pihole/:/etc/pihole/
+      - ./etc-dnsmasq.d/:/etc/dnsmasq.d/
+    restart: unless-stopped
+    networks:
+      mymacvlan:
+        ipv4_address: 192.168.1.9
+    #networks:
+    #  npi:
+    #    ipv4_address: 172.20.0.7
+
+  #whoogle:
+  #  #container_name: whoogle-search
+  #  image: benbusby/whoogle-search:buildx-experimental
+  #  #image: benbusby/whoogle-search
+  #  #mem_reservation: 140MiB
+  #  mem_limit: 256MiB
+  #  restart: unless-stopped
+  #  pids_limit: 50
+  #  memswap_limit: 256mb
+  #  # user debian-tor from tor package
+  #  user: '102'
+  #  #security_opt:
+  #  #  - no-new-privileges
+  #  cap_drop:
+  #    - ALL
+  #  #read_only: true
+  #  labels:
+  #    - "traefik.enable=true"
+  #    - "traefik.http.routers.whoogle.rule=Host(`whoogle.discovery.mair`)"
+  #    - "traefik.http.services.whoogle.loadBalancer.server.port=5000"
+  #  #ports:
+  #  #  - "5000:5000"
+  #  #dns:
+  #  #  - 172.20.0.7
+  #  #  - 192.168.1.10
+  #  tmpfs:
+  #    - /config/:size=10M,uid=102,gid=102,mode=1700
+  #    - /var/lib/tor/:size=10M,uid=102,gid=102,mode=1700
+  #    - /run/tor/:size=1M,uid=102,gid=102,mode=1700
+  #  networks:
+  #    npi:
+  #  #    ipv4_address: 172.20.0.8
+
+  whoogle-search:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`whoogle.discovery.mair`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      - "traefik.http.routers.whoami.tls.certresolver=myresolver"
+      - "traefik.http.services.whoogle-search.loadbalancer.server.port=5000"
+    image: benbusby/whoogle-search
+    container_name: whoogle-search
+    restart: unless-stopped
+    pids_limit: 100
+    mem_limit: 512mb
+    memswap_limit: 512mb
+    # user debian-tor from tor package
+    user: whoogle
+    security_opt:
+      - no-new-privileges
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /config/:size=10M,uid=927,gid=927,mode=1700
+      - /var/lib/tor/:size=15M,uid=927,gid=927,mode=1700
+      - /run/tor/:size=1M,uid=927,gid=927,mode=1700
+    #environment: # Uncomment to configure environment variables
+      # Basic auth configuration, uncomment to enable
+      #- WHOOGLE_USER=<auth username>
+      #- WHOOGLE_PASS=<auth password>
+      # Proxy configuration, uncomment to enable
+      #- WHOOGLE_PROXY_USER=<proxy username>
+      #- WHOOGLE_PROXY_PASS=<proxy password>
+      #- WHOOGLE_PROXY_TYPE=<proxy type (http|https|socks4|socks5)
+      #- WHOOGLE_PROXY_LOC=<proxy host/ip>
+      # Site alternative configurations, uncomment to enable
+      # Note: If not set, the feature will still be available
+      # with default values.
+      #- WHOOGLE_ALT_TW=farside.link/nitter
+      #- WHOOGLE_ALT_YT=farside.link/invidious
+      #- WHOOGLE_ALT_IG=farside.link/bibliogram/u
+      #- WHOOGLE_ALT_RD=farside.link/libreddit
+      #- WHOOGLE_ALT_MD=farside.link/scribe
+      #- WHOOGLE_ALT_TL=farside.link/lingva
+      #- WHOOGLE_ALT_IMG=farside.link/rimgo
+      #- WHOOGLE_ALT_WIKI=farside.link/wikiless
+      #- WHOOGLE_ALT_IMDB=farside.link/libremdb
+      #- WHOOGLE_ALT_QUORA=farside.link/quetre
+      # - WHOOGLE_CONFIG_DISABLE=1
+      # - WHOOGLE_CONFIG_SEARCH_LANGUAGE=lang_en
+      # - WHOOGLE_CONFIG_GET_ONLY=1
+      # - WHOOGLE_CONFIG_COUNTRY=FR
+      # - WHOOGLE_CONFIG_PREFERENCES_ENCRYPTED=1
+      # - WHOOGLE_CONFIG_PREFERENCES_KEY="NEEDS_TO_BE_MODIFIED"
+    #env_file: # Alternatively, load variables from whoogle.env
+      #- whoogle.env
+    #ports:
+    #  - 8000:5000
+    networks:
+      npi:
+
+  plex:
+    hostname: hellion
+    image: jaymoulin/plex
+    mem_reservation: 100MiB
+    mem_limit: 110MiB
+    pids_limit: 100
+    restart: unless-stopped
+    #network_mode: "host"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.plex.rule=Host(`plex.discovery.mair`)"
+      - "traefik.http.services.plex.loadBalancer.server.port=32400"
+    #expose:
+    #  - 32400
+    #  - 33400
+    volumes:
+      - ./usr/share/zoneinfo/America/Lima:/etc/localtime:ro
+    #ports:
+    #  - 8080:80
+    networks:
+      npi:
+
+  dashy:
+    image: lissy93/dashy:latest
+    mem_reservation: 50MiB
+    mem_limit: 60MiB
+    pids_limit: 100
+    restart: unless-stopped
+    #security_opt:
+    #  - no-new-privileges
+    cap_drop:
+      - ALL
+    labels:
+      - "traefik.http.routers.dashy.rule=Host(`dashy.discovery.mair`)"
+      #- "traefik.http.services.dashy.loadBalancer.server.port=5000"
+      - "traefik.enable=true"
+    #ports:
+    #  - 8083:80
+    volumes:
+      - ./dashy-config.yml:/app/public/conf.yml
+    networks:
+      npi:
+
+volumes:
+  portainer_data:
+
+networks:
+  mymacvlan:
+    driver: macvlan
+    driver_opts:
+      parent: ${net_name}
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
+          gateway: 192.168.1.1
+          ip_range: 192.168.1.9/24
+          #ip_range: 192.168.1.9/27
+          aux_addresses:
+            host: 192.168.1.80
+  npi:
+    driver: bridge
+  #  ipam:
+  #    config:
+  #      - subnet: 172.20.0.0/24

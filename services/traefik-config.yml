@@ -1,0 +1,35 @@
+entryPoints:
+  web:
+    address: ":80"
+
+  websecure:
+    address: ":443"
+
+
+providers:
+    docker:
+        #endpoint: "unix:///var/run/docker.sock"
+        endpoint: "tcp://127.0.0.1:2376"
+        exposedByDefault: false
+        #constraints: "Label(`environment`, `dev`)"
+        tls:
+            ca: "/root/.docker/ca.pem"
+            cert: "/root/.docker/cert.pem"
+            key: "/root/.docker/key.pem"
+            #insecureSkipVerify = true
+    file:
+        #filename: /traefik-servers.yml
+        filename: ./traefik-servers.yml
+
+
+api:
+    dashboard: true
+    insecure: true
+
+
+log:
+    #filePath: "/traefik.log"
+    filePath: "./traefik.log"
+    level: DEBUG
+    format: json
+

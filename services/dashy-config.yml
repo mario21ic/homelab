@@ -1,0 +1,136 @@
+pageInfo:
+  title: Home Lab
+
+sections: # An array of sections
+#- name: Example Section
+#  icon: far fa-rocket
+#  items:
+#  - title: GitHub
+#    description: Dashy source code and docs
+#    icon: fab fa-github
+#    url: https://github.com/Lissy93/dashy
+#  - title: Issues
+#    description: View open issues, or raise a new one
+#    icon: fas fa-bug
+#    url: https://github.com/Lissy93/dashy/issues
+
+- name: Services
+  items:
+  - title: Pihole
+    icon: favicon
+    url: http://pihole.discovery.mair/admin
+  - title: Whoogle
+    icon: favicon
+    url: https://whoogle.discovery.mair
+  - title: HomeAsistant
+    icon: favicon
+    url: https://plex.discovery.mair
+  - title: Plex
+    icon: favicon
+    url: https://plex.discovery.mair
+  - title: PlexGet
+    icon: favicon
+    url: https://plex.discovery.mair
+  - title: Tautulli
+    icon: favicon
+    url: https://plex.discovery.mair
+  - title: Transmission
+    icon: favicon
+    url: https://transmission.discovery.mair
+  - title: NAS
+    url: http://nas.discovery.mair/admin
+    icon: https://i.ibb.co/710B3Yc/space-invader-x256.png
+  - title: DuckDNS
+    icon: favicon
+    url: https://plex.discovery.mair
+  - title: Traefik
+    icon: favicon
+    url: http://192.168.1.10:8082
+  #- title: Hellion
+  #  url: http://192.168.1.10/
+  #  icon: https://i.ibb.co/710B3Yc/space-invader-x256.png
+
+- name: Monitoring
+  items:
+  - title: Prometheus
+    icon: favicon
+    url: http://prometheus.discovery.mair
+  - title: Grafana
+    icon: favicon
+    url: http://grafana.discovery.mair
+  - title: Monit
+    icon: favicon
+    url: http://monit.discovery.mair
+  - title: Portainer
+    icon: favicon
+    url: https://portainer.discovery.mair
+  - title: OpenVAS
+    icon: favicon
+    url: http://falco.discovery.mair
+  - title: ClamAV
+    icon: favicon
+    url: http://falco.discovery.mair
+  - title: Falco
+    icon: favicon
+    url: http://falco.discovery.mair
+  - title: Elastic
+    icon: favicon
+    url: https://mydep-ff69e5.kb.us-central1.gcp.cloud.es.io:9243/app/home?#/
+
+- name: Cluster
+  items:
+  - title: RockPi X
+    icon: favicon
+    url: http://rockpix.discovery.mair
+  - title: RPI 4
+    icon: favicon
+    url: http://rockpi4.discovery.mair
+  - title: Slurm
+    icon: favicon
+    url: http://192.168.1.2/
+  - title: Jetson
+    icon: favicon
+    url: http://192.168.1.60/
+  - title: PiBox
+    icon: favicon
+    url: http://192.168.1.2/
+
+- name: Network
+  items:
+  - title: Router
+    icon: favicon
+    url: http://192.168.1.1/
+  - title: PowerLine
+    icon: favicon
+    url: http://192.168.1.2/
+  - title: Netgear1
+    icon: favicon
+    url: http://192.168.1.4/
+  - title: Netgear2
+    icon: favicon
+    url: http://192.168.1.4/
+  - title: TPLink
+    icon: favicon
+    url: http://192.168.1.5/
+  - title: TPLink Poe
+    icon: favicon
+    url: http://192.168.1.5/
+  - title: OpenWRT1
+    icon: favicon
+    url: http://192.168.1.5/
+  - title: OpenWRT2
+    icon: favicon
+    url: http://192.168.1.5/
+  - title: OpenVPN
+    icon: favicon
+    url: http://192.168.1.2/
+  - title: NordVPN
+    icon: favicon
+    url: http://192.168.1.2/
+  - title: Wireguard
+    icon: favicon
+    url: http://192.168.1.2/
+  - title: PFSense
+    icon: favicon
+    url: http://192.168.1.2/
+
