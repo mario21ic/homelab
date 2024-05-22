@@ -1,0 +1,6 @@
+---
+- name: install prometheus
+  apt: name=prometheus state=present update_cache=yes
+
+- name: Enable service httpd, and not touch the state
+  ansible.builtin.service: name=prometheus state=started enabled=yes

@@ -1,0 +1,42 @@
+---
+- name: install dependencies
+  apt: name={{ item }} state=present update_cache=yes
+  with_items:
+    - apt-transport-https
+    - software-properties-common
+    - wget
+
+- name: Create keyrings directory
+  file:
+    path: /etc/apt/keyrings/
+    state: directory
+    mode: '0755'
+
+- name: Download Grafana GPG key
+  get_url:
+    url: https://apt.grafana.com/gpg.key
+    dest: /tmp/grafana.gpg
+
+- name: Add Grafana GPG key
+  command: gpg --dearmor --output /etc/apt/keyrings/grafana.gpg /tmp/grafana.gpg
+  args:
+    creates: /etc/apt/keyrings/grafana.gpg
+
+- name: Add Grafana repository
+  apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main"
+    state: present
+    filename: grafana
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install Grafana
+  apt: name=grafana state=present update_cache=yes
+
+- name: Enable service grafana
+  service: name=grafana-server state=started enabled=yes
+
+- name: Install Loki
+  apt: name=loki state=present update_cache=yes
